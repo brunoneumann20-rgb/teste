@@ -1,0 +1,781 @@
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { 
+  ChevronRight, 
+  Zap, 
+  Shield, 
+  Truck, 
+  Star, 
+  Sliders, 
+  Layers, 
+  CheckCircle, 
+  ArrowRight, 
+  Lock,
+  Menu,
+  X,
+  AlertTriangle,
+  MapPin,
+  FileCheck,
+  Globe,
+  ChevronDown
+} from 'lucide-react';
+
+const fadeInUp = {
+  initial: { opacity: 0, y: 30 },
+  whileInView: { opacity: 1, y: 0 },
+  transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] },
+  viewport: { once: true, margin: '-100px' }
+};
+
+export default function App() {
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [activeFAQ, setActiveFAQ] = useState<number | null>(null);
+  const [simulatorStep, setSimulatorStep] = useState<number>(2); // 1: Starter, 2: Professional, 3: Elite Master
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [currentMapTab, setCurrentMapTab] = useState<'nacional' | 'importado'>('nacional');
+
+  useEffect(() => {
+    const handleScroll = () => setIsScrolled(window.scrollY > 50);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Structural partnership profiles for the simulator
+  const partnerProfiles: Record<number, { title: string; subtitle: string; logistics: string; dispatchTime: string; support: string; targetAudience: string }> = {
+    1: {
+      title: 'Giro Inicial Flexível',
+      subtitle: 'Ideal para quem está começando a testar o mercado local com pedidos a partir de 5 peças.',
+      logistics: 'Distribuição via Correios e transportadoras com rastreamento expresso doméstico.',
+      dispatchTime: 'Separação e postagem em até 24h úteis da confirmação.',
+      support: 'Suporte humanizado direto via WhatsApp para tirar dúvidas de pedidos.',
+      targetAudience: 'Empreendedores iniciantes que buscam baixo investimento de largada.'
+    },
+    2: {
+      title: 'Revendedor Profissional',
+      subtitle: 'Grade semanal de reposição para lojas físicas e e-commerces com fluxo recorrente.',
+      logistics: 'Transportadoras rápidas com tarifas negociadas e seguro total da carga.',
+      dispatchTime: 'Prioridade na esteira de expedição e faturamento rápido do lote.',
+      support: 'Acesso a fotos e vídeos de alta qualidade das camisas para divulgação.',
+      targetAudience: 'Lojistas que precisam de consistência e não podem deixar faltar mercadoria.'
+    },
+    3: {
+      title: 'Distribuidor Regional',
+      subtitle: 'Parceria de alto volume para quem deseja comandar a revenda e atacado na sua cidade.',
+      logistics: 'Frete aéreo e rodoviário expresso prioritário direto da central nacional.',
+      dispatchTime: 'Despacho prioritário ultra-rápido direto na coleta matutina.',
+      support: 'Tabelas exclusivas de alto volume e canal de atendimento VIP de fábrica.',
+      targetAudience: 'Líderes de mercado regional com forte capacidade de escoamento.'
+    }
+  };
+
+  return (
+    <div className="bg-[#020506] text-gray-100 font-sans antialiased overflow-x-hidden selection:bg-[#c5a880] selection:text-black">
+      
+      { }
+      {/* Background Decorative Mesh and Golden-Emerald Fog */}
+      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-screen opacity-[0.015] bg-[linear-gradient(to_right,#ffffff_1px,transparent_1px),linear-gradient(to_bottom,#ffffff_1px,transparent_1px)] bg-[size:30px_45px]" />
+        {/* Glowing Orbs */}
+        <div className="absolute top-[-10%] left-[-20%] w-[60%] h-[60%] rounded-full bg-[#042d24]/30 blur-[140px]" />
+        <div className="absolute bottom-[20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-[#3a2f1b]/15 blur-[160px]" />
+      </div>
+
+      { }
+      {/* Header */}
+      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-[#020506]/95 backdrop-blur-md border-b border-[#111e1a] py-4' : 'bg-transparent py-6'}`}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="h-9 w-9 rounded-md bg-gradient-to-tr from-[#c5a880] to-[#042d24] flex items-center justify-center shadow-lg shadow-[#c5a880]/10">
+              <Lock className="w-4 h-4 text-[#020506] font-bold" />
+            </div>
+            <div className="flex flex-col">
+              <span className="font-extrabold text-[11px] tracking-[0.25em] text-white">
+                CANAL_DIRETO<span className="text-[#c5a880]">.BR</span>
+              </span>
+              <span className="text-[7px] text-gray-500 tracking-wider font-semibold uppercase">Matriz de Distribuição Nacional</span>
+            </div>
+          </div>
+
+          <nav className="hidden md:flex items-center gap-8 text-[10px] font-bold uppercase tracking-widest text-gray-400">
+            <a href="#proposta" className="hover:text-[#c5a880] transition-colors">Segurança Operacional</a>
+            <a href="#comparativo" className="hover:text-[#c5a880] transition-colors">Nacional x Importação</a>
+            <a href="#simulador" className="hover:text-[#c5a880] transition-colors">Configurador de Giro</a>
+            <a href="#qualidade" className="hover:text-[#c5a880] transition-colors">Qualidade das Camisas</a>
+          </nav>
+
+          <div className="hidden md:flex items-center gap-4">
+            <div className="h-2 w-2 rounded-full bg-[#52b788] animate-ping" />
+            <span className="text-[9px] text-gray-400 font-bold uppercase tracking-wider">
+              Estoque no Brasil Ativo
+            </span>
+            <a 
+              href="https://pay.cakto.com.br/3fwr8hc_909461" 
+              className="px-5 py-2.5 bg-[#c5a880] hover:bg-[#ebd0ab] text-black font-extrabold text-[10px] rounded uppercase tracking-widest transition-all duration-300"
+            >
+              Acessar Contato de Fornecedor
+            </a>
+          </div>
+
+          <button className="md:hidden text-gray-300" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </button>
+        </div>
+
+        {/* Mobile menu */}
+        <AnimatePresence>
+          {mobileMenuOpen && (
+            <motion.div 
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className="absolute top-full left-0 right-0 bg-[#020506]/98 backdrop-blur-xl border-b border-[#111e1a] px-6 py-8 flex flex-col gap-6 md:hidden z-50 shadow-2xl"
+            >
+              <a href="#proposta" onClick={() => setMobileMenuOpen(false)} className="text-xs font-bold text-gray-300 hover:text-[#c5a880] uppercase tracking-widest">Segurança Operacional</a>
+              <a href="#comparativo" onClick={() => setMobileMenuOpen(false)} className="text-xs font-bold text-gray-300 hover:text-[#c5a880] uppercase tracking-widest">Nacional x Importação</a>
+              <a href="#simulador" onClick={() => setMobileMenuOpen(false)} className="text-xs font-bold text-gray-300 hover:text-[#c5a880] uppercase tracking-widest">Configurador de Giro</a>
+              <a href="#qualidade" onClick={() => setMobileMenuOpen(false)} className="text-xs font-bold text-gray-300 hover:text-[#c5a880] uppercase tracking-widest">Qualidade das Camisas</a>
+              <div className="h-px bg-gray-900 w-full" />
+              <a 
+                href="https://pay.cakto.com.br/3fwr8hc_909461"
+                className="w-full text-center py-4 bg-[#c5a880] text-black font-extrabold text-[10px] rounded uppercase tracking-widest"
+              >
+                Acessar Contato de Fornecedor
+              </a>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </header>
+
+      { }
+      {/* Hero Layout with Asymmetric Grid */}
+      <section className="relative pt-32 pb-16 md:pt-48 md:pb-28 px-4 sm:px-6 lg:px-8 z-10 overflow-hidden">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid lg:grid-cols-12 gap-12 items-center">
+            
+            {/* Left Column: Copy focused on national supplier of football jerseys */}
+            <div className="lg:col-span-7 text-left space-y-6">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded bg-[#042d24]/40 border border-[#52b788]/20">
+                <Shield className="w-3.5 h-3.5 text-[#52b788]" />
+                <span className="text-[#52b788] text-[9px] font-bold tracking-[0.2em] uppercase">Estoque Físico no Brasil • Risco Zero de Perdas</span>
+              </div>
+
+              <h1 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight text-white leading-[1.05]">
+                Acesso ao Contato Secreto de<br />
+                <span className="bg-gradient-to-r from-[#c5a880] via-[#eed8be] to-[#52b788] bg-clip-text text-transparent">
+                  Camisas de Time com Estoque Nacional
+                </span>
+              </h1>
+
+              <p className="text-sm md:text-base text-gray-400 max-w-2xl leading-relaxed">
+                Pare de arriscar seu dinheiro importando camisas de time da Ásia, sofrendo com fretes caros e correndo o risco de ter suas mercadorias confiscadas ou taxadas em mais de 60%. Nós entregamos o contato direto do maior distribuidor de mantos de futebol com estoque pronto no Brasil para envio rápido em até 24h.
+              </p>
+
+              <div className="pt-2 flex flex-col sm:flex-row gap-4 items-stretch sm:items-center">
+                <a
+                  href="https://pay.cakto.com.br/3fwr8hc_909461"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group relative px-8 py-4.5 bg-[#c5a880] hover:bg-[#eed8be] text-black font-extrabold text-xs rounded uppercase tracking-[0.2em] transition-all duration-300 shadow-xl shadow-[#c5a880]/5 flex items-center justify-center gap-3"
+                >
+                  ACESSAR CONTATO DE FORNECEDOR
+                  <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </a>
+                <a
+                  href="#comparativo"
+                  className="px-8 py-4.5 border border-[#14231e] bg-[#020506]/60 text-gray-300 hover:text-white font-bold text-xs rounded uppercase tracking-[0.2em] hover:border-gray-700 hover:bg-white/5 transition-all duration-300 text-center flex items-center justify-center"
+                >
+                  Entenda o Risco Logístico
+                </a>
+              </div>
+
+              {/* Real-time Status Micro-widget */}
+              <div className="pt-6 border-t border-[#111e1a] flex flex-wrap gap-6 text-left">
+                <div className="flex items-center gap-2">
+                  <span className="h-2 w-2 rounded-full bg-[#52b788] animate-pulse" />
+                  <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Estoque Pronta Entrega no Brasil</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <FileCheck className="w-3.5 h-3.5 text-[#c5a880]" />
+                  <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Zero Risco Aduaneiro ou de Taxas</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Truck className="w-3.5 h-3.5 text-[#52b788]" />
+                  <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Postagem Doméstica em 24h</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Column: Visual Interactive Graphic representing Safe Logistics */}
+            <div className="lg:col-span-5 relative">
+              <div className="absolute inset-0 bg-gradient-to-tr from-[#52b788]/5 to-[#c5a880]/5 blur-2xl rounded-3xl" />
+              <div className="relative bg-[#040908] border border-[#111e1a] rounded p-6 shadow-2xl">
+                <div className="flex items-center justify-between mb-6 pb-4 border-b border-[#111e1a]">
+                  <span className="text-[9px] font-bold uppercase text-gray-400 tracking-widest flex items-center gap-1.5">
+                    <MapPin className="w-3 h-3 text-[#c5a880]" /> Fluxo Logístico de Fornecimento
+                  </span>
+                  <div className="flex gap-2">
+                    <button 
+                      onClick={() => setCurrentMapTab('nacional')}
+                      className={`px-2.5 py-1 text-[8px] uppercase font-bold tracking-wider rounded ${currentMapTab === 'nacional' ? 'bg-[#52b788]/20 text-[#52b788] border border-[#52b788]/40' : 'text-gray-500'}`}
+                    >
+                      Canal Nacional Seguro
+                    </button>
+                    <button 
+                      onClick={() => setCurrentMapTab('importado')}
+                      className={`px-2.5 py-1 text-[8px] uppercase font-bold tracking-wider rounded ${currentMapTab === 'importado' ? 'bg-red-500/10 text-red-400 border border-red-500/20' : 'text-gray-500'}`}
+                    >
+                      Dropshipping / Importação
+                    </button>
+                  </div>
+                </div>
+
+                <div className="h-56 relative bg-black/60 rounded border border-[#111e1a] overflow-hidden flex flex-col justify-between p-4">
+                  
+                  {/* Visual simulation based on tab */}
+                  {currentMapTab === 'nacional' ? (
+                    <>
+                      <div className="flex justify-between items-center z-10">
+                        <div className="flex items-center gap-1.5 bg-[#042d24] border border-[#52b788]/30 px-2 py-1 rounded">
+                          <span className="h-1.5 w-1.5 rounded-full bg-[#52b788] animate-ping" />
+                          <span className="text-[8px] font-bold text-white uppercase tracking-wider">Estoque Pronta Entrega</span>
+                        </div>
+                        <span className="text-[9px] text-[#52b788] font-bold">LIVRE DE TAXAS</span>
+                      </div>
+
+                      {/* Map Animation Overlay */}
+                      <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-40">
+                        <svg className="w-full h-full" viewBox="0 0 200 100">
+                          <path d="M 30,50 Q 100,20 170,50" fill="none" stroke="#52b788" strokeWidth="2" strokeDasharray="5,5" className="animate-[dash_10s_linear_infinite]" />
+                          <circle cx="30" cy="50" r="4" fill="#c5a880" />
+                          <circle cx="170" cy="50" r="4" fill="#52b788" />
+                        </svg>
+                      </div>
+
+                      <div className="z-10 bg-black/80 p-3 rounded border border-[#111e1a] space-y-2">
+                        <div className="flex justify-between text-[9px] text-gray-400 font-semibold uppercase">
+                          <span>Origem do Manto:</span>
+                          <span className="text-white">Distribuidora com Galpão no BR</span>
+                        </div>
+                        <div className="flex justify-between text-[9px] text-gray-400 font-semibold uppercase">
+                          <span>Segurança Fiscal:</span>
+                          <span className="text-[#52b788]">Livre de Retenção e Fiscalização de Importação</span>
+                        </div>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="flex justify-between items-center z-10">
+                        <div className="flex items-center gap-1.5 bg-red-950/40 border border-red-500/30 px-2 py-1 rounded">
+                          <AlertTriangle className="w-3 h-3 text-red-500" />
+                          <span className="text-[8px] font-bold text-white uppercase tracking-wider">Carga Retida / Fiscalizada</span>
+                        </div>
+                        <span className="text-[9px] text-red-400 font-bold">ALTA TRIBUTAÇÃO</span>
+                      </div>
+
+                      {/* Import Broken Path Map */}
+                      <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-30">
+                        <svg className="w-full h-full" viewBox="0 0 200 100">
+                          <path d="M 30,50 L 100,30 L 170,50" fill="none" stroke="#ef4444" strokeWidth="2" strokeDasharray="3,3" />
+                          <circle cx="30" cy="50" r="4" fill="#ef4444" />
+                          <circle cx="100" cy="30" r="6" fill="#ef4444" className="animate-ping" />
+                          <circle cx="170" cy="50" r="4" fill="#6b7280" />
+                        </svg>
+                      </div>
+
+                      <div className="z-10 bg-black/80 p-3 rounded border border-[#111e1a] space-y-2">
+                        <div className="flex justify-between text-[9px] text-gray-400 font-semibold uppercase">
+                          <span>Trajeto das Camisas:</span>
+                          <span className="text-white">Envio Internacional Asiático</span>
+                        </div>
+                        <div className="flex justify-between text-[9px] text-gray-400 font-semibold uppercase">
+                          <span>Tributação Remessa Conforme:</span>
+                          <span className="text-red-400">Risco de Multa, Taxas Extras e Bloqueio</span>
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </div>
+
+                <div className="mt-4 text-center">
+                  <p className="text-[10px] text-gray-400 leading-relaxed">
+                    {currentMapTab === 'nacional' 
+                      ? 'Ao adquirir o contato do fornecedor brasileiro, você compra mantos de futebol já nacionalizados e prontos para envio imediato por transportadoras nacionais.'
+                      : 'O modelo de importação direta faz o seu dinheiro ficar retido na alfândega com taxas abusivas, atrasando as entregas para seus clientes.'}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      { }
+      {/* Dynamic Comparison Matrix: National vs. International Importation */}
+      <section id="comparativo" className="py-20 border-t border-[#111e1a] bg-[#030708]/40 relative z-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <span className="text-[10px] text-[#c5a880] font-bold uppercase tracking-[0.3em]">Segurança Tática</span>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-white mt-2 mb-4">
+              Por que comprar direto de distribuidora nacional é a única rota segura
+            </h2>
+            <p className="text-xs text-gray-400">
+              Compare as duas formas de operar hoje e veja por que lojistas de sucesso abandonaram a importação direta para focar em fornecimento local.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-8 items-stretch">
+            
+            {/* The Old Importation Risk (Red Side) */}
+            <div className="bg-[#0b0506]/40 border border-red-950/40 p-8 rounded flex flex-col justify-between">
+              <div>
+                <div className="inline-flex items-center gap-2 px-3 py-1 bg-red-950/30 border border-red-500/20 rounded mb-6">
+                  <AlertTriangle className="w-3.5 h-3.5 text-red-400" />
+                  <span className="text-[9px] font-bold uppercase text-red-400 tracking-wider">O Risco da Importação de Camisas</span>
+                </div>
+                
+                <h3 className="text-xl font-bold text-white mb-6">As fragilidades do modelo dropshipping e aduaneiro asiático</h3>
+
+                <ul className="space-y-4 text-left">
+                  <li className="flex gap-3">
+                    <X className="w-4 h-4 text-red-500 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <h4 className="text-xs font-bold text-gray-200">Apreensão de Mercadoria</h4>
+                      <p className="text-[11px] text-gray-400">Fiscalizações severas e recorrentes nos centros de distribuição postal, retendo remessas de camisas e gerando chargebacks.</p>
+                    </div>
+                  </li>
+                  <li className="flex gap-3">
+                    <X className="w-4 h-4 text-red-500 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <h4 className="text-xs font-bold text-gray-200">Novas Taxas Abusivas</h4>
+                      <p className="text-[11px] text-gray-400">Cobrança de impostos de importação que muitas vezes chegam a ultrapassar o valor pago de custo, matando seu lucro.</p>
+                    </div>
+                  </li>
+                  <li className="flex gap-3">
+                    <X className="w-4 h-4 text-red-500 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <h4 className="text-xs font-bold text-gray-200">Clientes Furiosos com Demoras</h4>
+                      <p className="text-[11px] text-gray-400">Encomendas que levam de 30 a 50 dias para chegar. Reclamações que destroem a imagem da sua marca e de suas redes sociais.</p>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="mt-8 pt-6 border-t border-red-950/30 text-[10px] text-red-400/80 italic">
+                A nova realidade fiscal internacional de importação inviabilizou o dropshipping direto internacional de artigos esportivos no país.
+              </div>
+            </div>
+
+            {/* Our National Safe Route (Emerald & Gold Side) */}
+            <div className="bg-[#040a08]/50 border border-[#52b788]/20 p-8 rounded flex flex-col justify-between relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-[#c5a880]/5 blur-3xl rounded-full" />
+              
+              <div>
+                <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#042d24] border border-[#52b788]/30 rounded mb-6">
+                  <Shield className="w-3.5 h-3.5 text-[#52b788]" />
+                  <span className="text-[9px] font-bold uppercase text-[#52b788] tracking-wider">O Fornecedor Nacional Indicado</span>
+                </div>
+                
+                <h3 className="text-xl font-bold text-white mb-6">Mantos a pronta entrega e margens preservadas</h3>
+
+                <ul className="space-y-4 text-left">
+                  <li className="flex gap-3">
+                    <CheckCircle className="w-4 h-4 text-[#52b788] flex-shrink-0 mt-0.5" />
+                    <div>
+                      <h4 className="text-xs font-bold text-white">Estoque Físico e Envio Imediato</h4>
+                      <p className="text-[11px] text-gray-400">O fornecedor que indicamos possui milhares de camisas de time em solo nacional, prontas para serem embaladas e enviadas no mesmo dia.</p>
+                    </div>
+                  </li>
+                  <li className="flex gap-3">
+                    <CheckCircle className="w-4 h-4 text-[#52b788] flex-shrink-0 mt-0.5" />
+                    <div>
+                      <h4 className="text-xs font-bold text-white">Rastreabilidade Rápida Doméstica</h4>
+                      <p className="text-[11px] text-gray-400">Encomendas enviadas por malha rodoviária interna com prazo médio de 3 a 7 dias para entrega na casa do seu comprador.</p>
+                    </div>
+                  </li>
+                  <li className="flex gap-3">
+                    <CheckCircle className="w-4 h-4 text-[#52b788] flex-shrink-0 mt-0.5" />
+                    <div>
+                      <h4 className="text-xs font-bold text-white">Garantia Unificada contra Defeitos</h4>
+                      <p className="text-[11px] text-gray-400">Qualquer avaria ou defeito de fabricação é resolvido de forma ágil com reposição nacional sem burocracia ou envio internacional.</p>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="mt-8 pt-6 border-t border-[#14231e] text-[10px] text-[#c5a880] font-semibold uppercase tracking-wider">
+                Contato Direto Sem Intermediários • Pronta Entrega Brasil • Risco Zero
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      { }
+      {/* Structural Pillars with Clean Iconography and Asymmetry */}
+      <section id="proposta" className="py-24 relative z-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-12 gap-12 items-center">
+            
+            <div className="lg:col-span-4 space-y-6">
+              <span className="text-[10px] text-[#c5a880] font-bold uppercase tracking-[0.3em]">Estrutura Forte</span>
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">
+                Fornecimento seguro para sustentar as suas vendas
+              </h2>
+              <p className="text-xs text-gray-400 leading-relaxed">
+                Ao adquirir o acesso a este contato de distribuidor nacional de camisas de time, você para de depender da sorte e entra em um ecossistema previsível e lucrativo de mercadoria nacionalizada.
+              </p>
+              <div className="p-4 bg-[#040a08]/30 border border-[#111e1a] rounded flex items-center gap-3">
+                <Globe className="w-5 h-5 text-[#52b788]" />
+                <span className="text-[9px] text-gray-300 font-semibold uppercase tracking-wider">
+                  Estoque renovado semanalmente com lançamentos mundiais
+                </span>
+              </div>
+            </div>
+
+            <div className="lg:col-span-8 grid sm:grid-cols-2 gap-6">
+              {[
+                {
+                  icon: Truck,
+                  title: 'Logística Doméstica Acelerada',
+                  desc: 'Seus pedidos de camisas são despachados sem trâmites portuários. Velocidade extrema que encanta seus clientes e gera indicações.'
+                },
+                {
+                  icon: Shield,
+                  title: 'Operação Livre de Impostos Extras',
+                  desc: 'Venda com a tranquilidade de quem trabalha sob amparo fiscal local. Sem taxas surpresa no meio do trajeto de entrega.'
+                },
+                {
+                  icon: Layers,
+                  title: 'Lotes de Compra Flexíveis',
+                  desc: 'O distribuidor permite pedidos mínimos extremamente acessíveis a partir de 5 peças, ideal para gerenciar o fluxo de caixa.'
+                },
+                {
+                  icon: Star,
+                  title: 'Fotos Reais de Qualidade Premium',
+                  desc: 'Acesso a canais de materiais de apoio para você poder divulgar as camisas usando fotos e mídias profissionais prontas.'
+                }
+              ].map((pillar, idx) => {
+                const Icon = pillar.icon;
+                return (
+                  <div key={idx} className="bg-black/40 border border-[#111e1a] hover:border-[#c5a880]/20 p-6 rounded transition-all duration-300">
+                    <div className="h-9 w-9 rounded bg-[#c5a880]/5 border border-[#c5a880]/20 flex items-center justify-center text-[#c5a880] mb-4">
+                      <Icon className="w-4.5 h-4.5" />
+                    </div>
+                    <h3 className="text-xs font-bold text-white uppercase tracking-wider mb-2">{pillar.title}</h3>
+                    <p className="text-[11px] text-gray-400 leading-relaxed">{pillar.desc}</p>
+                  </div>
+                );
+              })}
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      { }
+      {/* Redesigned Premium Simulator Slider */}
+      <section id="simulador" className="py-24 bg-[#030708]/50 border-t border-[#111e1a] relative z-10 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <span className="text-[10px] text-[#c5a880] font-bold uppercase tracking-[0.3em]">Reposição Sob Demanda</span>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-white mt-2 mb-4">
+              Simule a Capacidade da Distribuidora
+            </h2>
+            <p className="text-xs text-gray-400">
+              Escolha seu nível atual de revenda de camisas e conheça os detalhes operacionais que nosso fornecedor parceiro oferece para sua escala.
+            </p>
+          </div>
+
+          <div className="bg-[#040908] border border-[#111e1a] rounded p-6 sm:p-10 shadow-2xl relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-[#c5a880]/30 to-transparent" />
+            
+            {/* Step Selection Header */}
+            <div className="grid grid-cols-3 gap-2 bg-[#020506] p-1 rounded border border-[#111e1a] mb-10">
+              {[
+                { step: 1, label: 'Giro Inicial' },
+                { step: 2, label: 'Revenda Pro' },
+                { step: 3, label: 'Distribuidor VIP' }
+              ].map((item) => (
+                <button
+                  key={item.step}
+                  onClick={() => setSimulatorStep(item.step)}
+                  className={`py-3 text-[9px] uppercase tracking-widest font-bold rounded transition-all duration-300 ${simulatorStep === item.step ? 'bg-[#c5a880] text-black shadow-lg shadow-[#c5a880]/10' : 'text-gray-500 hover:text-white'}`}
+                >
+                  {item.label}
+                </button>
+              ))}
+            </div>
+
+            {/* Simulated Data Render */}
+            <div className="grid md:grid-cols-2 gap-8 items-center">
+              <div className="space-y-6">
+                <div>
+                  <span className="text-[#c5a880] text-[8px] font-bold uppercase tracking-[0.2em] block mb-1">Maturidade de Estoque</span>
+                  <h3 className="text-xl font-bold text-white uppercase tracking-wider">{partnerProfiles[simulatorStep].title}</h3>
+                  <p className="text-[11px] text-gray-400 leading-relaxed mt-2">{partnerProfiles[simulatorStep].subtitle}</p>
+                </div>
+
+                <div className="space-y-3 pt-2">
+                  <div className="p-3 bg-black/60 rounded border border-[#111e1a] flex gap-3 items-center">
+                    <Truck className="w-4 h-4 text-[#52b788] flex-shrink-0" />
+                    <div>
+                      <span className="text-[8px] text-gray-500 font-bold uppercase tracking-wider block">Logística Interna</span>
+                      <span className="text-[10px] text-gray-200 font-semibold">{partnerProfiles[simulatorStep].logistics}</span>
+                    </div>
+                  </div>
+
+                  <div className="p-3 bg-black/60 rounded border border-[#111e1a] flex gap-3 items-center">
+                    <Zap className="w-4 h-4 text-[#c5a880] flex-shrink-0" />
+                    <div>
+                      <span className="text-[8px] text-gray-500 font-bold uppercase tracking-wider block">Postagem de Lote</span>
+                      <span className="text-[10px] text-gray-200 font-semibold">{partnerProfiles[simulatorStep].dispatchTime}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-black/40 border border-[#111e1a] p-6 rounded flex flex-col justify-between min-h-[220px]">
+                <div>
+                  <div className="h-8 w-8 rounded bg-[#c5a880]/5 border border-[#c5a880]/20 flex items-center justify-center text-[#c5a880] mb-4">
+                    <Sliders className="w-4 h-4" />
+                  </div>
+                  <h4 className="text-xs font-bold text-white uppercase tracking-wider mb-2">Materiais de Apoio Disponíveis</h4>
+                  <p className="text-[11px] text-gray-400 leading-relaxed">
+                    {partnerProfiles[simulatorStep].support}
+                  </p>
+                </div>
+
+                <div className="pt-6 border-t border-[#111e1a] mt-6">
+                  <span className="text-[8px] text-gray-500 font-bold uppercase tracking-wider block mb-1">Público do Perfil</span>
+                  <p className="text-[11px] text-[#52b788] font-bold uppercase tracking-wider">
+                    {partnerProfiles[simulatorStep].targetAudience}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      { }
+      {/* High-End Technical Specifications Section */}
+      <section id="qualidade" className="py-24 border-t border-[#111e1a] relative z-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-12 gap-12 items-center">
+            
+            <div className="lg:col-span-6 space-y-6">
+              <span className="text-[10px] text-[#c5a880] font-bold uppercase tracking-[0.3em]">Linha Têxtil Premium</span>
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">
+                Padrão de confecção idêntico ao exigido nas vitrines globais
+              </h2>
+              <p className="text-xs text-gray-400 leading-relaxed">
+                As camisas disponibilizadas pelo fornecedor contam com os tecidos mais avançados de tecnologia Dry-FIT esportiva. Ao tocar na peça, seu cliente percebe imediatamente o valor e a autenticidade do acabamento premium.
+              </p>
+
+              <div className="space-y-4 pt-4">
+                {[
+                  { title: 'Fios Tecnológicos Respiráveis', desc: 'Tecido de alta engenharia que dissipa o suor e mantém o corpo fresco. Malha idêntica às versões oficiais de jogo e torcedor.' },
+                  { title: 'Escudos Bordados de Extrema Simetria', desc: 'Bordados de altíssima definição, patchs termocolados em relevo impecável e costuras alinhadas sem sobras.' },
+                  { title: 'Tagging Completo de Fábrica', desc: 'Mantos acompanhados por todas as etiquetas externas de papel acetinado e saquinho de embalagem esportivo individual.' }
+                ].map((item, idx) => (
+                  <div key={idx} className="flex gap-3">
+                    <div className="h-6 w-6 rounded-full bg-[#c5a880]/5 border border-[#c5a880]/20 flex items-center justify-center text-[#c5a880] flex-shrink-0 mt-0.5">
+                      <span className="text-[9px] font-bold">{idx + 1}</span>
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-white text-xs uppercase tracking-wider">{item.title}</h4>
+                      <p className="text-[11px] text-gray-400 leading-relaxed mt-1">{item.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="lg:col-span-6 bg-[#040908]/50 border border-[#111e1a] p-8 rounded relative overflow-hidden flex flex-col justify-center min-h-[380px]">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-[#c5a880]/3 blur-3xl rounded-full" />
+              <div className="relative z-10 text-center space-y-6">
+                <div className="inline-block px-3 py-1 bg-[#52b788]/10 border border-[#52b788]/30 rounded text-[8px] text-[#52b788] font-bold uppercase tracking-widest">
+                  Ficha Técnica das Camisas
+                </div>
+                <h3 className="text-lg font-bold text-white uppercase tracking-wider">Acabamento e Composição</h3>
+                
+                <div className="grid grid-cols-2 gap-4 text-left">
+                  <div className="bg-black/60 p-4 rounded border border-[#111e1a]">
+                    <span className="block text-[8px] text-gray-500 font-bold uppercase tracking-widest mb-1">Tecnologia Têxtil</span>
+                    <span className="text-[11px] font-semibold text-gray-300">Dry-FIT / AeroSwift</span>
+                  </div>
+                  <div className="bg-black/60 p-4 rounded border border-[#111e1a]">
+                    <span className="block text-[8px] text-gray-500 font-bold uppercase tracking-widest mb-1">Aviamentos</span>
+                    <span className="text-[11px] font-semibold text-gray-300">Escudos com Relevo e Costura</span>
+                  </div>
+                  <div className="bg-black/60 p-4 rounded border border-[#111e1a]">
+                    <span className="block text-[8px] text-gray-500 font-bold uppercase tracking-widest mb-1">Grade de Tamanhos</span>
+                    <span className="text-[11px] font-semibold text-gray-300">P ao G4 (Plus Size Ativo)</span>
+                  </div>
+                  <div className="bg-black/60 p-4 rounded border border-[#111e1a]">
+                    <span className="block text-[8px] text-gray-500 font-bold uppercase tracking-widest mb-1">Sustentabilidade</span>
+                    <span className="text-[11px] font-semibold text-gray-300">Fios de Poliéster Reciclado</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {}
+      {/* Dynamic Direct Accordion Directives */}
+      <section id="faq" className="py-24 relative z-10">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6">
+          <div className="text-center mb-16">
+            <span className="text-[10px] text-[#c5a880] font-bold uppercase tracking-[0.3em]">Dúvidas Gerais</span>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-white mt-2 mb-4">
+              Perguntas sobre o Acesso ao Contato
+            </h2>
+            <p className="text-xs text-gray-400">
+              Esclareça suas dúvidas sobre a liberação de acesso e o modelo do fornecedor indicado.
+            </p>
+          </div>
+
+          <div className="space-y-4">
+            {[
+              {
+                q: 'O que eu recebo ao adquirir o acesso?',
+                a: 'Você terá acesso imediato aos contatos diretos e oficiais do fornecedor e distribuidor nacional de camisas de time, incluindo links diretos para catálogos, grade de produtos atualizada e canal de suporte interno para registrar seus pedidos.'
+              },
+              {
+                q: 'O fornecedor indicado realmente envia a partir do Brasil?',
+                a: 'Sim, garantido. Todas as camisas esportivas estão em estoque físico dentro do Brasil. O despacho é imediato via transportadoras domésticas ou Correios, sem nenhuma possibilidade de cobrança de taxas de importação na entrega.'
+              },
+              {
+                q: 'Qual o valor mínimo por peça na distribuidora?',
+                a: 'As tabelas e as excelentes margens do fornecedor são focadas no atacado. Você comprará diretamente pelos preços de atacado direto de distribuidora, garantindo excelente rentabilidade sobre cada manto vendido no mercado local.'
+              },
+              {
+                q: 'Eu preciso possuir empresa aberta (CNPJ)?',
+                a: 'Não. O fornecedor nacional aceita pedidos tanto de pessoas físicas (CPF) iniciando no ramo de confecção e revenda quanto de empresas (CNPJ) estruturadas de comércio varejista.'
+              }
+            ].map((item, idx) => (
+              <div 
+                key={idx} 
+                className="border border-[#111e1a] bg-black/40 rounded overflow-hidden transition-all duration-300"
+              >
+                <button
+                  onClick={() => setActiveFAQ(activeFAQ === idx ? null : idx)}
+                  className="w-full text-left p-6 flex justify-between items-center gap-4 hover:bg-[#042d24]/10 transition-colors"
+                >
+                  <span className="font-bold text-gray-200 text-xs md:text-sm uppercase tracking-wider">{item.q}</span>
+                  <ChevronDown className={`w-4 h-4 text-[#c5a880] flex-shrink-0 transition-transform duration-300 ${activeFAQ === idx ? 'rotate-180' : ''}`} />
+                </button>
+                <AnimatePresence initial={false}>
+                  {activeFAQ === idx && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="border-t border-[#111e1a]"
+                    >
+                      <p className="p-6 text-xs text-gray-400 leading-relaxed bg-[#020506]/90">
+                        {item.a}
+                      </p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      { }
+      {/* FINAL CTA SECTION - Restoring exact design from IMG_0224.jpg with updated copy */}
+      <section className="py-24 px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="max-w-5xl mx-auto font-sans">
+          <div className="relative rounded overflow-hidden bg-gradient-to-br from-[#c5a880]/15 to-[#042d24]/5 border border-[#c5a880]/15 p-8 sm:p-16 text-center shadow-2xl">
+            <div className="absolute inset-0 bg-[#020506]/98 z-0" />
+            
+            <div className="relative z-10 max-w-3xl mx-auto space-y-6">
+              
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#042d24]/60 border border-[#52b788]/30 rounded text-[9px] text-[#52b788] font-bold uppercase tracking-widest">
+                <Lock className="w-3 h-3" /> CANAL LOGÍSTICO COMPACTADO
+              </span>
+              
+              <h2 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight leading-tight uppercase">
+                CONECTE-SE AO MELHOR FORNECEDOR DE CAMISAS DE TIME DO BRASIL
+              </h2>
+              
+              <p className="text-xs text-gray-300 leading-relaxed max-w-2xl mx-auto">
+                Tenha acesso imediato ao contato de maior prestígio do mercado nacional de camisas esportivas. Estoque físico no Brasil, livre de riscos aduaneiros e pronto para envio expresso. Conecte sua operação direto à fonte de mantos de futebol.
+              </p>
+
+              <div className="pt-4">
+                <motion.a
+                  href="https://pay.cakto.com.br/3fwr8hc_909461"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group inline-flex items-center gap-3 px-8 py-4.5 bg-[#c5a880] hover:bg-[#eed8be] text-black font-black text-xs rounded uppercase tracking-[0.2em] transition-all duration-300 shadow-xl shadow-[#c5a880]/10"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  REIVINDICAR CONEXÃO À MATRIZ
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </motion.a>
+              </div>
+
+              <p className="text-[8px] text-gray-500 flex items-center justify-center gap-2 uppercase tracking-wider font-semibold">
+                <span>OPERAÇÃO SOB AMPARO FISCAL DOMÉSTICO</span>
+                <span>•</span>
+                <span>DESPACHO EM 24H</span>
+              </p>
+              
+            </div>
+          </div>
+        </div>
+      </section>
+
+      { }
+      {/* Footer */}
+      <footer className="bg-black border-t border-[#111e1a] py-16 px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid md:grid-cols-3 gap-12 text-center md:text-left mb-12">
+            <div>
+              <div className="flex items-center gap-2 justify-center md:justify-start mb-4">
+                <div className="h-6 w-6 rounded bg-[#c5a880] flex items-center justify-center">
+                  <Lock className="w-3.5 h-3.5 text-black" />
+                </div>
+                <span className="font-extrabold text-xs text-white uppercase tracking-wider">CANAL_DIRETO<span className="text-[#c5a880]">.BR</span></span>
+              </div>
+              <p className="text-[11px] text-gray-500 leading-relaxed max-w-xs mx-auto md:mx-0">
+                Solução integrada para acesso a contato de fornecedor nacional de vestuário esportivo e camisas de time em solo brasileiro. Livre de entraves aduaneiros.
+              </p>
+            </div>
+            
+            <div>
+              <h4 className="font-bold text-white text-xs uppercase tracking-widest mb-4">Governança Logística</h4>
+              <p className="text-[11px] text-gray-500 leading-relaxed">
+                As remessas rodoviárias e aéreas domésticas do fornecedor indicado operam integradas com as maiores e mais rápidas transportadoras expressas do Brasil.
+              </p>
+            </div>
+
+            <div>
+              <h4 className="font-bold text-white text-xs uppercase tracking-widest mb-4">Mitigação Tributária</h4>
+              <p className="text-[11px] text-gray-500 leading-relaxed">
+                Eliminação absoluta de riscos de apreensão e novas taxações de importação devido à nacionalização e faturamento interno do estoque central de distribuição.
+              </p>
+            </div>
+          </div>
+
+          <div className="border-t border-[#111e1a] pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-[9px] text-gray-600 text-center">
+            <p>© 2026 Rede Nacional de Abastecimento Têxtil Esportivo. Direitos Reservados.</p>
+            <p>Conexão corporativa direta a estoque de camisas pronto para revenda nacional. Cadastro e liberação condicionados ao fluxo de rede.</p>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+}
